@@ -1,0 +1,5 @@
+node_modules
+.env
+a.markdown
+package-lock.json
+.prettierrc
