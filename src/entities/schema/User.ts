@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IUser } from './models/User';
+import { IUser } from '../models/interface/User';
 
 const userSchema = new Schema<IUser>({
     id: {
@@ -9,34 +9,34 @@ const userSchema = new Schema<IUser>({
     },
     name: {
         type: String,
-        required: [true, 'Please add a name']
+        required: true
     },
     cpf: {
         type: String,
-        required: [true, 'Please add a cpf'],
+        required: true,
         unique: true
     },
     email: {
         type: String,
-        required: [true, 'Please add an email'],
+        required: true,
         unique: true
     },
     telephone: {
         type: String,
-        required: [true, 'Please add a telephone'],
+        required: true,
         unique: true
     },
     password: {
         type: String,
-        required: [true, 'Please add a password']
+        required: true
     },
     birthdate: {
         type: Date,
-        required: [true, 'Please add a birthdate']
+        required: true
     },
     gender: {
         type: String,
-        required: [true, 'Please add a gender'],
+        required: true,
         enum: ['homem', 'mulher', 'outro']
     },
     userType: {
@@ -44,6 +44,11 @@ const userSchema = new Schema<IUser>({
         required: true,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    token: {
+        type: String,
+        required: true,
+        unique: true
     }
 });
 

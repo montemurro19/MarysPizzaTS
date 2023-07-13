@@ -9,29 +9,6 @@ class UserController {
         this.userService = userService;
     }
 
-    async getById(req: any, res: Response) {
-        if (req.user) {
-            const user = await this.userService.getById(req.user.id);
-            res.status(200).json(user);
-        }
-        res.status(404).json({ message: 'user not found' });
-    }
-
-    /* async getByCpf(req: Request, res: Response) {
-        const user = await this.userService.getByCpf(req.params.cpf);
-        res.status(200).json(user);
-    }
-
-    async getByEmail(req: Request, res: Response) {
-        const user = await this.userService.getByEmail(req.params.email);
-        res.status(200).json(user);
-    }
-
-    async getByTelephone(req: Request, res: Response) {
-        const user = await this.userService.getByTelephone(req.params.telephone);
-        res.status(200).json(user);
-    } */
-
     async create(req: Request, res: Response) {
         const { name, cpf, email, telephone, password, birthdate, gender } = req.body;
         if (!name || !cpf || !email || !telephone || !password || !birthdate || !gender) res.status(400).json({ message: 'preenche tudo!' });

@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IItem } from './models/Item';
+import { IItem } from '../models/interface/Item';
 
 const itemSchema = new Schema<IItem>({
     id: {
