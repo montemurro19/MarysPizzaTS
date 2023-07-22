@@ -6,6 +6,7 @@ import { ItemRoute } from './Item/item.route';
 import mongoose from 'mongoose';
 import config from './Common/config';
 import { UserRoute } from './User/user.route';
+import { AddressRoute } from './Address/address.route';
 
 const app: Express = express();
 const routes: Array<RouteConfig> = [];
@@ -21,6 +22,7 @@ declare global {
 app.use(express.json());
 routes.push(new ItemRoute(app));
 routes.push(new UserRoute(app));
+routes.push(new AddressRoute(app));
 
 const server: http.Server = http.createServer(app);
 

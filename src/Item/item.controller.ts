@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { CreateItemDTO } from './Entities/item.DTO';
+import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
 import itemService from './item.service';
 
 class ItemController {
@@ -10,12 +10,12 @@ class ItemController {
             const newItem = await itemService.createItem(item, user);
             res.status(201).json(newItem);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao criar o item', e });
+            res.status(500).json({ erro: 'falha ao criar o item' });
         }
     }
     async updateItem(req: Request, res: Response) {
         const id = req.params.id;
-        const item = req.body;
+        const item: UpdateItemDTO = req.body;
         const user = req.user;
         try {
             const updatedItem = await itemService.updateItem(id, item, user);
@@ -55,7 +55,9 @@ class ItemController {
         try {
             const item = await itemService.getItemById(id);
             res.status(200).json(item);
-        } catch (e) {}
+        } catch (e) {
+            res.status(500).json({ erro: 'falha ao encontrar o item' });
+        }
     }
     async getByTitle(req: Request, res: Response) {
         const title = req.params.title;
