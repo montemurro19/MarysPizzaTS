@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import * as http from 'http';
 import { RouteConfig } from './Common/route.config';
 import { IUser } from './User/Entities/user.model';
@@ -9,6 +9,7 @@ import { UserRoute } from './User/user.route';
 import { AddressRoute } from './Address/address.route';
 import errorhandle from './Common/error';
 import { OrderRoute } from './Order/order.route';
+import logs from './Common/logs';
 
 const app: Express = express();
 const routes: Array<RouteConfig> = [];
@@ -23,6 +24,16 @@ declare global {
 
 app.use(express.json());
 app.use(errorhandle);
+app.use((req: Request, res: Response, next: NextFunction) => {
+    logs.info('SERVER', `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+
+    res.on('finish', () => {
+        logs.info('SERVER', `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+    });
+
+    next();
+});
+
 routes.push(new ItemRoute(app));
 routes.push(new UserRoute(app));
 routes.push(new AddressRoute(app));
@@ -33,11 +44,11 @@ const server: http.Server = http.createServer(app);
 mongoose
     .connect(config.mongo.url)
     .then(() => {
-        console.log('MongoDB is connectred!');
+        logs.info('DATABASE', 'MongoDB is connectred!');
         server.listen(3000, () => {
-            console.log(`server is runnig!`);
+            logs.info('SERVER', 'server is runnig!');
         });
     })
     .catch(() => {
-        console.log('deu ruim!');
+        logs.error('DATABASE', 'deu ruim!');
     });
