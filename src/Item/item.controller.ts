@@ -4,21 +4,16 @@ import itemService from './item.service';
 
 class ItemController {
     async createItem(req: Request, res: Response) {
-        const item: CreateItemDTO = req.body;
-        const user = req.user;
         try {
-            const newItem = await itemService.createItem(item, user);
+            const newItem = await itemService.createItem(req.body, req.user);
             res.status(201).json(newItem);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao criar o item' });
         }
     }
     async updateItem(req: Request, res: Response) {
-        const id = req.params.id;
-        const item: UpdateItemDTO = req.body;
-        const user = req.user;
         try {
-            const updatedItem = await itemService.updateItem(id, item, user);
+            const updatedItem = await itemService.updateItem(req.params.id, req.body, req.user);
             if (updatedItem) {
                 res.status(200).json(updatedItem);
             } else {
@@ -29,10 +24,8 @@ class ItemController {
         }
     }
     async deleteItem(req: Request, res: Response) {
-        const id = req.params.id;
-        const user = req.user;
         try {
-            const deletedItem = await itemService.deleteItem(id, user);
+            const deletedItem = await itemService.deleteItem(req.params.id, req.user);
             if (deletedItem) {
                 res.status(200).json(deletedItem);
             } else {
@@ -51,18 +44,16 @@ class ItemController {
         }
     }
     async getById(req: Request, res: Response) {
-        const id = req.params.id;
         try {
-            const item = await itemService.getItemById(id);
+            const item = await itemService.getItemById(req.params.id);
             res.status(200).json(item);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar o item' });
         }
     }
     async getByTitle(req: Request, res: Response) {
-        const title = req.params.title;
         try {
-            const item = await itemService.getItemByTitle(title);
+            const item = await itemService.getItemByTitle(req.params.title);
             if (item) {
                 res.status(200).json(item);
             } else {
@@ -73,9 +64,8 @@ class ItemController {
         }
     }
     async getByType(req: Request, res: Response) {
-        const type = req.params.type;
         try {
-            const items = await itemService.getItemByType(type);
+            const items = await itemService.getItemByType(req.params.type);
             if (items && items.length > 0) {
                 res.status(200).json(items);
             } else {

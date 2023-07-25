@@ -1,13 +1,11 @@
 import { Request, Response } from 'express';
-import { CreateUserDTO } from './Entities/user.DTO';
 import userService from './user.service';
 import { compare } from 'bcrypt';
 
 class UserController {
     async createUser(req: Request, res: Response) {
-        const user: CreateUserDTO = req.body;
         try {
-            const newUser = await userService.createUser(user);
+            const newUser = await userService.createUser(req.body);
             res.status(201).json(newUser);
         } catch (e) {
             res.status(400).json({ erro: 'usuário já existe' });

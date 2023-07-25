@@ -4,19 +4,16 @@ import addressService from './address.service';
 
 class AddressController {
     async createAddress(req: Request, res: Response) {
-        const address = req.body;
         try {
-            const newAddress = await addressService.createAddress(address, req.user);
+            const newAddress = await addressService.createAddress(req.body, req.user);
             res.status(201).json(newAddress);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao criar o endereço', e });
         }
     }
     async updateAddress(req: Request, res: Response) {
-        const id = req.params.id;
-        const address: UpdateAddressDTO = req.body;
         try {
-            const updatedAddress = await addressService.updateAddress(id, address, req.user);
+            const updatedAddress = await addressService.updateAddress(req.params.id, req.body, req.user);
             if (updatedAddress) {
                 res.status(200).json(updatedAddress);
             } else {
@@ -27,9 +24,8 @@ class AddressController {
         }
     }
     async deleteAddress(req: Request, res: Response) {
-        const id = req.params.id;
         try {
-            const deletedAddress = await addressService.deleteAddress(id);
+            const deletedAddress = await addressService.deleteAddress(req.params.id);
             if (deletedAddress) {
                 res.status(200).json(deletedAddress);
             } else {
@@ -48,18 +44,16 @@ class AddressController {
         }
     }
     async getById(req: Request, res: Response) {
-        const id = req.params.id;
         try {
-            const address = await addressService.getAddressById(id, req.user);
+            const address = await addressService.getAddressById(req.params.id, req.user);
             res.status(200).json(address);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar os endereços' });
         }
     }
     async getByTitle(req: Request, res: Response) {
-        const title = req.params.title;
         try {
-            const address = await addressService.getAddressByTitle(title, req.user);
+            const address = await addressService.getAddressByTitle(req.params.title, req.user);
             if (address) {
                 res.status(200).json(address);
             } else {
