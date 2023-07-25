@@ -27,7 +27,7 @@ class OrderService {
         const orders = this.cache();
         return orders;
     }
-    async getOrderById(id: string, user: IUser): Promise<IOrder | undefined> {
+    async getOrderById(id: string): Promise<IOrder | undefined> {
         const orders = this.cache();
         const order = (await orders).find((data) => data.id === id);
         return order;

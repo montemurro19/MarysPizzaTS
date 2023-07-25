@@ -24,7 +24,7 @@ class OrderController {
     }
     async getOrderById(req: Request, res: Response) {
         try {
-            const order = await orderService.getOrderById(req.params.id, req.user);
+            const order = await orderService.getOrderById(req.params.id);
             res.status(200).json(order);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao atualizar o pedido' });
