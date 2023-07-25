@@ -15,7 +15,7 @@ class AddressService {
         if (addressExists) {
             throw new Error('endereço já cadastrado');
         }
-        const newAddress = await addressRepository.create(address);
+        const newAddress = await addressRepository.create({ ...address, userId: user.id });
         this.memoryCache = null;
         return newAddress;
     }

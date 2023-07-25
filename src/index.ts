@@ -7,6 +7,8 @@ import mongoose from 'mongoose';
 import config from './Common/config';
 import { UserRoute } from './User/user.route';
 import { AddressRoute } from './Address/address.route';
+import errorhandle from './Common/error';
+import { OrderRoute } from './Order/order.route';
 
 const app: Express = express();
 const routes: Array<RouteConfig> = [];
@@ -20,9 +22,11 @@ declare global {
 }
 
 app.use(express.json());
+app.use(errorhandle);
 routes.push(new ItemRoute(app));
 routes.push(new UserRoute(app));
 routes.push(new AddressRoute(app));
+routes.push(new OrderRoute(app));
 
 const server: http.Server = http.createServer(app);
 

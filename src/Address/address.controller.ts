@@ -4,21 +4,19 @@ import addressService from './address.service';
 
 class AddressController {
     async createAddress(req: Request, res: Response) {
-        const address: CreateAddressDTO = req.body;
-        const user = req.user;
+        const address = req.body;
         try {
-            const newAddress = await addressService.createAddress(address, user);
+            const newAddress = await addressService.createAddress(address, req.user);
             res.status(201).json(newAddress);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao criar o endereço' });
+            res.status(500).json({ erro: 'falha ao criar o endereço', e });
         }
     }
     async updateAddress(req: Request, res: Response) {
         const id = req.params.id;
         const address: UpdateAddressDTO = req.body;
-        const user = req.user;
         try {
-            const updatedAddress = await addressService.updateAddress(id, address, user);
+            const updatedAddress = await addressService.updateAddress(id, address, req.user);
             if (updatedAddress) {
                 res.status(200).json(updatedAddress);
             } else {
@@ -42,9 +40,8 @@ class AddressController {
         }
     }
     async getAllAddress(req: Request, res: Response) {
-        const user = req.user;
         try {
-            const addresses = await addressService.getAllAddress(user);
+            const addresses = await addressService.getAllAddress(req.user);
             res.status(200).json(addresses);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar os endereços' });
@@ -52,19 +49,17 @@ class AddressController {
     }
     async getById(req: Request, res: Response) {
         const id = req.params.id;
-        const user = req.user;
         try {
-            const address = await addressService.getAddressById(id, user);
+            const address = await addressService.getAddressById(id, req.user);
             res.status(200).json(address);
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar os endereços' });
         }
     }
     async getByTitle(req: Request, res: Response) {
-        const user = req.user;
         const title = req.params.title;
         try {
-            const address = await addressService.getAddressByTitle(title, user);
+            const address = await addressService.getAddressByTitle(title, req.user);
             if (address) {
                 res.status(200).json(address);
             } else {

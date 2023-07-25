@@ -10,7 +10,6 @@ class ItemService {
         return this.memoryCache;
     }
     async createItem(item: CreateItemDTO, user: IUser): Promise<IItem> {
-        console.log(user);
         if (user.userType === 'admin') {
             const itemExists = await this.getItemByTitle(item.title);
             if (itemExists) {
