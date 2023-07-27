@@ -1,5 +1,18 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
+// dotenv.config();
+
+class Config {
+  private MONGO_CONFIG: {
+    url: string;
+  };
+
+  get mongo() {
+    return this.MONGO_CONFIG;
+  }
+}
+
+const config = new Config();
+config.mongo;
 
 const MONGO_USERNAME = process.env.MONGO_USERNAME || '';
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD || '';
@@ -14,31 +27,31 @@ const REDIS_PORT = process.env.REDIS_PORT || '';
 const NODE_ENV = process.env.NODE_ENV;
 
 const MONGO = {
-    url: `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}`
+  url: `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}`,
 };
 
 const SERVER = {
-    port: SERVER_PORT
+  port: SERVER_PORT,
 };
 
 const JWT = {
-    secret: JWT_SECRET
+  secret: JWT_SECRET,
 };
 
 const REDIS = {
-    port: REDIS_PORT
+  port: REDIS_PORT,
 };
 
 const NODE = {
-    env: NODE_ENV
+  env: NODE_ENV,
 };
 
 const config = {
-    mongo: MONGO,
-    server: SERVER,
-    jwt: JWT,
-    node: NODE,
-    redis: REDIS
+  mongo: MONGO,
+  server: SERVER,
+  jwt: JWT,
+  node: NODE,
+  redis: REDIS,
 };
 
 export default config;

@@ -15,23 +15,29 @@ const app: Express = express();
 const routes: Array<RouteConfig> = [];
 
 declare global {
-    namespace Express {
-        interface Request {
-            user: IUser;
-        }
+  namespace Express {
+    interface Request {
+      user: IUser;
     }
+  }
 }
-
+app.use((req, res, next) => {});
 app.use(express.json());
 app.use(errorhandle);
 app.use((req: Request, res: Response, next: NextFunction) => {
-    logs.info('SERVER', `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+  logs.info(
+    'SERVER',
+    `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`
+  );
 
-    res.on('finish', () => {
-        logs.info('SERVER', `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
-    });
+  res.on('finish', () => {
+    logs.info(
+      'SERVER',
+      `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`
+    );
+  });
 
-    next();
+  next();
 });
 
 routes.push(new ItemRoute(app));
@@ -41,14 +47,15 @@ routes.push(new OrderRoute(app));
 
 const server: http.Server = http.createServer(app);
 
+server.listen(3000, () => {
+  logs.info('SERVER', 'server is runnig!');
+});
+
 mongoose
-    .connect(config.mongo.url)
-    .then(() => {
-        logs.info('DATABASE', 'MongoDB is connectred!');
-        server.listen(3000, () => {
-            logs.info('SERVER', 'server is runnig!');
-        });
-    })
-    .catch(() => {
-        logs.error('DATABASE', 'deu ruim!');
-    });
+  .connect(config.mongo.url)
+  .then(() => {
+    logs.info('DATABASE', 'MongoDB is connectred!');
+  })
+  .catch(() => {
+    logs.error('DATABASE', 'deu ruim!');
+  });
