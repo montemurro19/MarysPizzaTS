@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
 import itemService from './item.service';
 
+// SUGESTÃO DE MELHORIA 11
+// Implementar validação do payload na camada de controller
 class ItemController {
     async createItem(req: Request, res: Response) {
         try {
@@ -14,6 +16,7 @@ class ItemController {
     async updateItem(req: Request, res: Response) {
         try {
             const updatedItem = await itemService.updateItem(req.params.id, req.body, req.user);
+            // utilizar o return para evitar o if-else
             if (updatedItem) {
                 res.status(200).json(updatedItem);
             } else {
@@ -25,6 +28,8 @@ class ItemController {
     }
     async deleteItem(req: Request, res: Response) {
         try {
+            // se o item não existe o service pode retornar um erro
+            // e no catch do controller tratar o erro
             const deletedItem = await itemService.deleteItem(req.params.id, req.user);
             if (deletedItem) {
                 res.status(200).json(deletedItem);

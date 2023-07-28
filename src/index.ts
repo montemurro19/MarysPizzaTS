@@ -39,6 +39,19 @@ routes.push(new UserRoute(app));
 routes.push(new AddressRoute(app));
 routes.push(new OrderRoute(app));
 
+// SUGESTÃO DE MELHORIA 01
+// Organizar o código de inicialização do servidor em uma função "boot"
+// server, banco, integrações (redis, serviços da aws), etc
+// e chamar ela aqui
+// a função pode ficar em Common/boot.ts
+// await boot(app)
+
+// SUGESTÃO DE MELHORIA 02
+// Chamar o server.listen antes de conectar no banco
+// E ao receber requisições, antes de processar, verificar se o banco está conectado
+// Se não estiver, segurar a requisição até o banco conectar ou até um timeout
+// Se o banco não conectar, retornar um erro 5xx
+
 const server: http.Server = http.createServer(app);
 
 mongoose

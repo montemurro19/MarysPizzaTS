@@ -3,6 +3,13 @@ import config from './config';
 import jwt = require('jsonwebtoken');
 import userService from '../User/user.service';
 
+
+// SUGESTÃO DE MELHORIA 05
+// 1. O nome da classe deveria ser token
+// 2. Refatorar o método auth para que o código fique mais limpo e legível
+// 3. Separar a lógica de validar o token do middleware
+// 4. Evitar o código "Hadouken" (if dentro de if dentro de if)
+// 5. Utilizar o pattern guard-clause para evitar o código "Hadouken"
 class token {
     async auth(req: Request, res: Response, next: NextFunction) {
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {

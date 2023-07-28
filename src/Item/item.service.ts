@@ -10,6 +10,7 @@ class ItemService {
         return this.memoryCache;
     }
     async createItem(item: CreateItemDTO, user: IUser): Promise<IItem> {
+        // alterar para guard-clause
         if (user.userType === 'admin') {
             const itemExists = await this.getItemByTitle(item.title);
             if (itemExists) {
@@ -23,6 +24,7 @@ class ItemService {
         }
     }
     async updateItem(id: string, item: UpdateItemDTO, user: IUser): Promise<IItem | null> {
+        // alterar para guard-clause
         if (user.userType === 'admin') {
             const updatedItem = await itemRepository.update(id, item);
             this.memoryCache = null;

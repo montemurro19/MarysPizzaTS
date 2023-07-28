@@ -33,6 +33,10 @@ const NODE = {
     env: NODE_ENV
 };
 
+// SUGESTÃO DE MELHORIA 04
+// Transformar o objeto config em uma classe
+// e criar métodos para acessar as propriedades
+// ex: config.get('mongo.url')
 const config = {
     mongo: MONGO,
     server: SERVER,
