@@ -1,15 +1,15 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import * as http from 'http';
-import { RouteConfig } from './Common/route.config';
+import { RouteConfig } from './Util/route.config';
 import { IUser } from './User/Entities/user.model';
 import { ItemRoute } from './Item/item.route';
 import mongoose from 'mongoose';
-import config from './Common/config';
+import config from './Util/config';
 import { UserRoute } from './User/user.route';
 import { AddressRoute } from './Address/address.route';
-import errorhandle from './Common/error';
+import errorhandle from './Util/Middlewares/error';
 import { OrderRoute } from './Order/order.route';
-import logs from './Common/logs';
+import logs from './Util/Middlewares/logs';
 
 const app: Express = express();
 const routes: Array<RouteConfig> = [];
@@ -42,11 +42,11 @@ routes.push(new OrderRoute(app));
 const server: http.Server = http.createServer(app);
 
 mongoose
-    .connect(config.mongo.url)
+    .connect(config.mongo)
     .then(() => {
         logs.info('DATABASE', 'MongoDB is connectred!');
-        server.listen(3000, () => {
-            logs.info('SERVER', 'server is runnig!');
+        server.listen(config.port, () => {
+            logs.info('SERVER', 'server is runnig!', config.port);
         });
     })
     .catch(() => {
