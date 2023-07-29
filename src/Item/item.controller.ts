@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
 import itemService from './item.service';
 
 class ItemController {
-    async createItem(req: Request, res: Response) {
+    async createItem(req: Request, res: Response, next: NextFunction) {
         try {
             const newItem = await itemService.createItem(req.body, req.user);
             res.status(201).json(newItem);
-        } catch (e) {
-            res.status(500).json({ erro: 'falha ao criar o item' });
+        } catch (e: any) {
+            next(e);
         }
     }
     async updateItem(req: Request, res: Response) {
