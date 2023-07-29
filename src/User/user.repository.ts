@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 import { CreateUserDTO, UpdateUserDTO } from './Entities/user.DTO';
 import { IUser, UserModel } from './Entities/user.model';
 import { sign } from 'jsonwebtoken';
-import config from '../Common/config';
+import config from '../Util/config';
 import { genSalt, hash } from 'bcrypt';
 
 export interface IUserRepository {
@@ -14,7 +14,7 @@ export interface IUserRepository {
 class UserRepository implements IUserRepository {
     async create(user: CreateUserDTO): Promise<IUser> {
         const id = v4();
-        const token = sign({ id: id }, config.jwt.secret, { expiresIn: '30d' });
+        const token = sign({ id: id }, config.jwt, { expiresIn: '30d' });
         const salt = await genSalt(10);
         const hashedPassword = await hash(user.password, salt);
         const newUser: IUser = {

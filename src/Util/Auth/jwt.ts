@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import config from './config';
+import config from '../config';
 import jwt = require('jsonwebtoken');
-import userService from '../User/user.service';
+import userService from '../../User/user.service';
 
-class token {
-    async auth(req: Request, res: Response, next: NextFunction) {
+class Token {
+    
+    async authii(req: Request, res: Response, next: NextFunction) {
         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
             const token = req.headers.authorization.split(' ')[1];
             try {
@@ -30,4 +31,4 @@ class token {
     }
 }
 
-export default new token();
+export default new Token();
