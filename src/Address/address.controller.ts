@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { CreateAddressDTO, UpdateAddressDTO } from './Entities/address.DTO';
 import addressService from './address.service';
 
 class AddressController {

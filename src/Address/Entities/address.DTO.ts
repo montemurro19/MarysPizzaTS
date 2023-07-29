@@ -8,6 +8,7 @@ export interface CreateAddressDTO {
     city: string;
     landmark: string;
 }
+
 export interface UpdateAddressDTO {
     title?: string;
     cep?: string;

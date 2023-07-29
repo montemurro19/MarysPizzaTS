@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
 import itemService from './item.service';
 
 class ItemController {
