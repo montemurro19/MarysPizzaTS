@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { RouteConfig } from '../Util/route.config';
+import { RouteConfig } from '../Util/Config/route.config';
 import itemController from './item.controller';
 import authController from '../Util/Auth/Auth.controller';
 

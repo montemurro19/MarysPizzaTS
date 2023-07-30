@@ -1,5 +1,5 @@
 import jwt = require('jsonwebtoken');
-import config from '../config';
+import config from '../Config/config';
 import { IUser } from '../../User/Entities/user.model';
 import userService from '../../User/user.service';
 

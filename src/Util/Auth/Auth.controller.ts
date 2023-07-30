@@ -4,6 +4,7 @@ import Token from '../Middlewares/token';
 class AuthController {
     async auth(req: Request, res: Response, next: NextFunction) {
         const authorization = req.headers.authorization;
+
         if (!(authorization && authorization.startsWith('Bearer'))) {
             res.status(403).json({ message: 'no token' });
             return;
@@ -16,6 +17,7 @@ class AuthController {
                 res.status(404).json({ message: 'user not found' });
                 return;
             }
+
             req.user = data;
             next();
         });

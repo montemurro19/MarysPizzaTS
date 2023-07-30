@@ -1,12 +1,12 @@
 import * as http from 'http';
-import config from './config';
+import config from './Config/config';
 import logs from './Middlewares/logs';
-import db from './Middlewares/db';
+import db from './Config/db';
 
-export default function boot(server: http.Server) {
+export default async function boot(server: http.Server) {
     server.listen(config.port, () => {
         logs.info('server', 'server is connected');
     });
 
-    db.connect();
+    await db.connect();
 }
