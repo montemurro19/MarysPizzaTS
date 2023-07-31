@@ -22,9 +22,7 @@ class AddressService {
         }
 
         const newAddress = await addressRepository.create({ ...address, userId: user.id });
-
         this.memoryCache = null;
-
         return newAddress;
     }
 
@@ -37,37 +35,30 @@ class AddressService {
         }
 
         const updatedAddress = await addressRepository.update(id, newAddress);
-
         this.memoryCache = null;
-
         return updatedAddress;
     }
 
     async deleteAddress(id: string): Promise<boolean> {
         const deletedAddress = await addressRepository.delete(id);
-
         this.memoryCache = null;
-
         return deletedAddress;
     }
 
     async getAllAddress(user: IUser): Promise<IAddress[]> {
         const addresses = this.cache(user.id);
-
         return addresses;
     }
 
     async getAddressById(id: string, user: IUser): Promise<IAddress | undefined> {
         const addresses = await this.cache(user.id);
         const address = addresses.find((data) => data.id === id);
-
         return address;
     }
 
     async getAddressByTitle(title: string, user: IUser): Promise<IAddress | undefined> {
         const addresses = await this.cache(user.id);
         const address = addresses.find((data) => data.title === title);
-
         return address;
     }
 }

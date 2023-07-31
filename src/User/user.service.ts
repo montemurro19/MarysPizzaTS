@@ -9,10 +9,12 @@ class UserService {
         this.memoryCache !== null ? this.memoryCache : (this.memoryCache = await userRepository.get());
         return this.memoryCache;
     }
+
     async createUser(user: CreateUserDTO): Promise<IUser> {
         const emailExists = await this.getUserByEmail(user.email);
         const cpfExists = await this.getUserByCpf(user.cpf);
         const telephoneExists = await this.getUserByTelephone(user.telephone);
+
         if (!!emailExists) {
             throw new Error('email já cadastrado');
         }
@@ -22,10 +24,12 @@ class UserService {
         if (!!telephoneExists) {
             throw new Error('telefone já cadastrado');
         }
+
         const newUser = await userRepository.create(user);
         this.memoryCache = null;
         return newUser;
     }
+
     async updateUser(email: string, senha: string, newUser: UpdateUserDTO): Promise<IUser | null> {
         const user = await this.getUserByEmail(email);
         if (!user) {
@@ -40,25 +44,30 @@ class UserService {
             throw new Error('erro ao att usuario');
         }
     }
+
     async getAllUsers(): Promise<IUser[]> {
         const users = await this.cache();
         return users;
     }
+
     async getUserById(id: string): Promise<IUser | undefined> {
         const users = await this.cache();
         const user = users.find((data) => data.id === id);
         return user;
     }
+
     async getUserByEmail(email: string): Promise<IUser | undefined> {
         const users = await this.cache();
         const user = users.find((data) => data.email === email);
         return user;
     }
+
     async getUserByCpf(cpf: string): Promise<IUser | undefined> {
         const users = await this.cache();
         const user = users.find((data) => data.cpf === cpf);
         return user;
     }
+
     async getUserByTelephone(telephone: string): Promise<IUser | undefined> {
         const users = await this.cache();
         const user = users.find((data) => data.telephone === telephone);

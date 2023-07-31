@@ -9,28 +9,32 @@ class ItemService {
         this.memoryCache !== null ? this.memoryCache : (this.memoryCache = await itemRepository.get());
         return this.memoryCache;
     }
+
     async createItem(item: CreateItemDTO, user: IUser): Promise<IItem> {
-        if (user.userType === 'admin') {
-            const itemExists = await this.getItemByTitle(item.title);
-            if (itemExists) {
-                throw new Error('Item já cadastrado');
-            }
-            const newItem = await itemRepository.create(item);
-            this.memoryCache = null;
-            return newItem;
-        } else {
-            throw new Error('sem autorização');
+        if (user.userType !== 'admin') {
+            throw { message: 'sem autorização' };
         }
+
+        const itemExists = await this.getItemByTitle(item.title);
+        if (itemExists) {
+            throw { message: 'Item já cadastrado' };
+        }
+
+        const newItem = await itemRepository.create(item);
+        this.memoryCache = null;
+        return newItem;
     }
+
     async updateItem(id: string, item: UpdateItemDTO, user: IUser): Promise<IItem | null> {
-        if (user.userType === 'admin') {
-            const updatedItem = await itemRepository.update(id, item);
-            this.memoryCache = null;
-            return updatedItem;
-        } else {
-            throw new Error('sem autorização');
+        if (user.userType !== 'admin') {
+            throw { message: 'sem autorização' };
         }
+
+        const updatedItem = await itemRepository.update(id, item);
+        this.memoryCache = null;
+        return updatedItem;
     }
+
     async deleteItem(id: string, user: IUser): Promise<boolean> {
         if (user.userType === 'admin') {
             const deletedItem = await itemRepository.delete(id);
@@ -40,6 +44,7 @@ class ItemService {
             throw new Error('sem autorização');
         }
     }
+
     async getAllItems(): Promise<IItem[]> {
         const items = this.cache();
         return items;

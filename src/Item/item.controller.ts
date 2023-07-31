@@ -7,19 +7,18 @@ class ItemController {
             const newItem = await itemService.createItem(req.body, req.user);
             res.status(201).json(newItem);
         } catch (e: any) {
-            next(e);
+            next(e.message);
         }
     }
-    
+
     async updateItem(req: Request, res: Response) {
         try {
             const updatedItem = await itemService.updateItem(req.params.id, req.body, req.user);
             if (!updatedItem) {
                 res.status(404).json({ erro: 'item não encontrado' });
             }
-                
+
             res.status(200).json(updatedItem);
-            
         } catch (e) {
             res.status(500).json({ erro: 'falha ao atualizar o item' });
         }
@@ -30,9 +29,8 @@ class ItemController {
             const deletedItem = await itemService.deleteItem(req.params.id, req.user);
             if (!deletedItem) {
                 res.status(404).json({ erro: 'item não encontrado' });
-            }    
+            }
             res.status(200).json(deletedItem);
-        
         } catch (e) {
             res.status(500).json({ erro: 'falha ao deletar item' });
         }
@@ -63,7 +61,6 @@ class ItemController {
                 res.status(404).json({ erro: 'item não encontrado' });
             }
             res.status(200).json(item);
-
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar o item' });
         }
@@ -76,7 +73,6 @@ class ItemController {
                 res.status(404).json({ erro: 'categoria não encontrada' });
             }
             res.status(200).json(items);
-
         } catch (e) {
             res.status(500).json({ erro: 'falha ao encontrar itens' });
         }

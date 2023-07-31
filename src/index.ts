@@ -5,8 +5,8 @@ import { IUser } from './User/Entities/user.model';
 import { ItemRoute } from './Item/item.route';
 import { UserRoute } from './User/user.route';
 import { AddressRoute } from './Address/address.route';
-import errorhandle from './Util/Middlewares/error';
 import { OrderRoute } from './Order/order.route';
+import errorhandle from './Util/Middlewares/error';
 import logs from './Util/Middlewares/logs';
 import boot from './Util/boot';
 
@@ -50,7 +50,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-app.use(errorhandle);
+//app.use(errorhandle);
 
 routes.push(new ItemRoute(app));
 routes.push(new UserRoute(app));
@@ -60,7 +60,7 @@ routes.push(new OrderRoute(app));
 const server: http.Server = http.createServer(app);
 
 boot(server).then(() => {
-    console.log(`Processing ${requestQueue.length} requests...`);
+    logs.info('server', `Processing ${requestQueue.length} requests...`);
     requestQueue.length = 0;
     canProcessRequest = true;
 });
