@@ -3,24 +3,6 @@ import config from './config';
 import logs from '../Middlewares/logs';
 
 class Database {
-    async connect() {
-        try {
-            await mongoose.connect(config.mongo);
-            logs.info('database', 'mongo is connected');
-        } catch (e) {
-            logs.error('database', 'mongo isnt connected');
-        }
-    }
-}
-
-export default new Database();
-
-/* import mongoose from 'mongoose';
-import debug, { IDebugger } from 'debug';
-
-const log: IDebugger = debug('app:mongoose-service');
-
-class MongooseService {
     private count = 0;
     private mongooseOptions = {
         useNewUrlParser: true,
@@ -30,29 +12,18 @@ class MongooseService {
         useFindAndModify: false
     };
 
-    constructor() {
-        this.connectWithRetry();
-    }
-
-    getInstance() {
-        return mongoose;
-    }
-
-    connectWithRetry() {
-        log('process.env.MONGODB_URI', process.env.MONGODB_URI);
-        const MONGODB_URI = process.env.MONGODB_URI || '';
-        log('Connecting to MongoDB(Retry when failed)');
+    async connect() {
+        logs.info('database', 'Connecting to MongoDB(Retry when failed)');
         mongoose
-            .connect(MONGODB_URI, this.mongooseOptions)
+            .connect(config.mongo)
             .then(() => {
-                log('MongoDB is connected');
+                logs.info('database', 'MongoDB is connected');
             })
-            .catch((err) => {
+            .catch(() => {
                 const retrySeconds = 5;
-                log(`MongoDB connection unsuccessful (will retry #${++this.count} after ${retrySeconds} seconds):`, err);
-                setTimeout(this.connectWithRetry, retrySeconds * 1000);
+                logs.info('database', `MongoDB connection unsuccessful (will retry #${++this.count} after ${retrySeconds} seconds):`);
             });
     }
 }
 
-export default new MongooseService(); */
+export default new Database();
