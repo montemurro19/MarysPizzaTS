@@ -4,6 +4,7 @@ export interface CreateItemDTO {
     price: number;
     type: string;
 }
+
 export interface UpdateItemDTO {
     title?: string;
     description?: string;

@@ -1,27 +1,25 @@
 import { Application } from 'express';
-import { RouteConfig } from '../Util/route.config';
+import { RouteConfig } from '../Util/Config/route.config';
 import addressController from './address.controller';
-import jwt from '../Util/Auth/jwt';
+import authController from '../Util/Auth/Auth.controller';
+
+const path = '/api/address/';
 
 export class AddressRoute extends RouteConfig {
-    private path: string = '/api/address/'
-
     constructor(app: Application) {
         super(app, 'AddressRoute');
     }
 
     configRoute(): Application {
-        this.app.route(this.path)
-            .get([jwt.auth, addressController.getAllAddress])
-            .post([jwt.auth, addressController.createAddress]);
+        this.app.route(path).get([authController.auth, addressController.getAllAddress]).post([authController.auth, addressController.createAddress]);
 
-        this.app.route(`${this.path}:id`)
-            .get([jwt.auth, addressController.getById])
-            .put([jwt.auth, addressController.updateAddress])
-            .delete([jwt.auth, addressController.deleteAddress]);
+        this.app
+            .route(`${path}:id`)
+            .get([authController.auth, addressController.getById])
+            .put([authController.auth, addressController.updateAddress])
+            .delete([authController.auth, addressController.deleteAddress]);
 
-        this.app.route(`${this.path}:title`)
-            .get([jwt.auth, addressController.getByTitle]);
+        this.app.route(`${path}:title`).get([authController.auth, addressController.getByTitle]);
 
         return this.app;
     }
