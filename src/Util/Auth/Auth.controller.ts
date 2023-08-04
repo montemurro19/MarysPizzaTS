@@ -5,22 +5,34 @@ class AuthController {
     async auth(req: Request, res: Response, next: NextFunction) {
         const authorization = req.headers.authorization;
 
-        if (!(authorization && authorization.startsWith('Bearer'))) {
-            res.status(403).json({ message: 'no token' });
-            return;
-        }
+        try {
+            if (!(authorization && authorization.startsWith('Bearer'))) {
+                throw { error: 'unauthorized' };
+            }
 
-        const token = authorization.split(' ')[1];
+            const token = authorization.split(' ')[1];
 
-        Token.auth(token).then((data) => {
+            const data = await Token.auth(token);
             if (data === undefined) {
-                res.status(404).json({ message: 'user not found' });
-                return;
+                throw { error: 'unauthorized' };
             }
 
             req.user = data;
             next();
-        });
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async isAdmin(req: Request, res: Response, next: NextFunction) {
+        try {
+            if (req.user.userType !== 'admin') {
+                throw { error: 'unauthorized' };
+            }
+            next();
+        } catch (e) {
+            next(e);
+        }
     }
 }
 

@@ -11,13 +11,9 @@ class ItemService {
     }
 
     async createItem(item: CreateItemDTO, user: IUser): Promise<IItem> {
-        if (user.userType !== 'admin') {
-            throw { message: 'sem autorização' };
-        }
-
         const itemExists = await this.getItemByTitle(item.title);
         if (itemExists) {
-            throw { message: 'Item já cadastrado' };
+            throw { error: 'conflict', message: 'Item já cadastrado' };
         }
 
         const newItem = await itemRepository.create(item);
@@ -27,7 +23,7 @@ class ItemService {
 
     async updateItem(id: string, item: UpdateItemDTO, user: IUser): Promise<IItem | null> {
         if (user.userType !== 'admin') {
-            throw { message: 'sem autorização' };
+            throw { error: 'unauthorized', message: 'sem autorização' };
         }
 
         const updatedItem = await itemRepository.update(id, item);
@@ -36,13 +32,13 @@ class ItemService {
     }
 
     async deleteItem(id: string, user: IUser): Promise<boolean> {
-        if (user.userType === 'admin') {
-            const deletedItem = await itemRepository.delete(id);
-            this.memoryCache = null;
-            return deletedItem;
-        } else {
-            throw new Error('sem autorização');
+        if (user.userType !== 'admin') {
+            throw { error: 'unauthorized', message: 'sem autorização' };
         }
+
+        const deletedItem = await itemRepository.delete(id);
+        this.memoryCache = null;
+        return deletedItem;
     }
 
     async getAllItems(): Promise<IItem[]> {

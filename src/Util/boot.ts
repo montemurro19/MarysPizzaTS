@@ -8,5 +8,5 @@ export default async function boot(server: http.Server) {
         logs.info('server', 'server is connected');
     });
 
-    await db.connect();
+    //await db.connect();
 }

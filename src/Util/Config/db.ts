@@ -10,9 +10,13 @@ class Database {
             .then(() => {
                 logs.info('database', 'MongoDB is connected');
             })
-            .catch(() => {
-                logs.info('database', 'MongoDB connection unsuccessful');
+            .catch((e) => {
+                logs.info('database', 'MongoDB connection unsuccessful', e);
             });
+    }
+
+    isConnected(): boolean {
+        return mongoose.connection.readyState === 1;
     }
 }
 
