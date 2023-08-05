@@ -3,18 +3,19 @@ import { CreateAddressDTO, UpdateAddressDTO } from './Entities/address.DTO';
 import { AddressModel, IAddress } from './Entities/address.model';
 
 export interface IAddressRepository {
-    create(address: CreateAddressDTO): Promise<IAddress>;
+    create(userId: string, address: CreateAddressDTO): Promise<IAddress>;
     update(id: string, address: UpdateAddressDTO): Promise<IAddress | null>;
     delete(id: string): Promise<boolean>;
     get(userId: string): Promise<IAddress[]>;
 }
 
 class AddressRepository implements IAddressRepository {
-    async create(address: CreateAddressDTO): Promise<IAddress> {
+    async create(userId: string, address: CreateAddressDTO): Promise<IAddress> {
         const id = v4();
 
         const newAddress: IAddress = {
             ...address,
+            userId: userId,
             id: id
         };
 

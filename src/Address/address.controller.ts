@@ -1,17 +1,18 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import addressService from './address.service';
 
 class AddressController {
-    async createAddress(req: Request, res: Response) {
+    async createAddress(req: Request, res: Response, next: NextFunction) {
         try {
-            const newAddress = await addressService.createAddress(req.body, req.user);
+            const { title, cep, street, number, neighborhood, city, landmark } = req.body;
+            const newAddress = await addressService.createAddress({ title, cep, street, number, neighborhood, city, landmark }, req.user);
             res.status(201).json(newAddress);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao criar o endereço', e });
+            next(e);
         }
     }
 
-    async updateAddress(req: Request, res: Response) {
+    async updateAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const updatedAddress = await addressService.updateAddress(req.params.id, req.body, req.user);
             if (!updatedAddress) {
@@ -19,11 +20,11 @@ class AddressController {
             }
             res.status(200).json(updatedAddress);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao atualizar o endereço' });
+            next(e);
         }
     }
 
-    async deleteAddress(req: Request, res: Response) {
+    async deleteAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const deletedAddress = await addressService.deleteAddress(req.params.id);
             if (!deletedAddress) {
@@ -31,29 +32,29 @@ class AddressController {
             }
             res.status(200).json(deletedAddress);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao deletar endereço' });
+            next(e);
         }
     }
 
-    async getAllAddress(req: Request, res: Response) {
+    async getAllAddress(req: Request, res: Response, next: NextFunction) {
         try {
             const addresses = await addressService.getAllAddress(req.user);
             res.status(200).json(addresses);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao encontrar os endereços' });
+            next(e);
         }
     }
 
-    async getById(req: Request, res: Response) {
+    async getById(req: Request, res: Response, next: NextFunction) {
         try {
             const address = await addressService.getAddressById(req.params.id, req.user);
             res.status(200).json(address);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao encontrar os endereços' });
+            next(e);
         }
     }
 
-    async getByTitle(req: Request, res: Response) {
+    async getByTitle(req: Request, res: Response, next: NextFunction) {
         try {
             const address = await addressService.getAddressByTitle(req.params.title, req.user);
             if (!address) {
@@ -61,7 +62,7 @@ class AddressController {
             }
             res.status(200).json(address);
         } catch (e) {
-            res.status(500).json({ erro: 'falha ao encontrar os endereços' });
+            next(e);
         }
     }
 }

@@ -18,10 +18,10 @@ class AddressService {
         const addressExists = addresses.find((data) => data.title === address.title);
 
         if (addressExists) {
-            throw new Error('endereço já cadastrado');
+            throw { error: '', message: 'endereço já cadastrado' };
         }
 
-        const newAddress = await addressRepository.create({ ...address, userId: user.id });
+        const newAddress = await addressRepository.create(user.id, { ...address });
         this.memoryCache = null;
         return newAddress;
     }

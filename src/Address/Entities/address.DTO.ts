@@ -1,5 +1,4 @@
 export interface CreateAddressDTO {
-    userId: string;
     title: string;
     cep: string;
     street: string;

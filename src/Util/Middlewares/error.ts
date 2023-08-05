@@ -26,7 +26,5 @@ export function errorResponse(err: IError, req: Request, res: Response, next: Ne
 }
 
 export async function errorMongoose(err: Error, req: Request, res: Response, next: NextFunction) {
-    if (err.name === 'MongooseError') {
-        await sendEmail('montemurro.matheus@gmail.com', 'banco de dados parou!', err.message);
-    }
+    await sendEmail('montemurro.matheus@gmail.com', 'banco de dados parou!', err.message);
 }
