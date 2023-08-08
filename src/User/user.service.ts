@@ -1,78 +1,63 @@
-import { compare } from 'bcrypt';
-import { CreateUserDTO, UpdateUserDTO } from './Entities/user.DTO';
-import { IUser } from './Entities/user.model';
-import userRepository from './user.repository';
+import { CreateUserDTO, UpdateUserDTO } from './user.DTO';
+import { IUser } from './user.model';
+import UserRepository from './user.repository';
 
-class UserService {
-    private memoryCache: IUser[] | null = null;
-    private async cache(): Promise<IUser[]> {
-        this.memoryCache !== null ? this.memoryCache : (this.memoryCache = await userRepository.get());
-        return this.memoryCache;
+export default class UserService {
+    private repository: UserRepository;
+
+    constructor() {
+        this.repository = new UserRepository();
     }
 
-    async createUser(user: CreateUserDTO): Promise<IUser> {
-        const emailExists = await this.getUserByEmail(user.email);
-        const cpfExists = await this.getUserByCpf(user.cpf);
-        const telephoneExists = await this.getUserByTelephone(user.telephone);
-
-        if (!!emailExists) {
-            throw new Error('email já cadastrado');
-        }
-        if (!!cpfExists) {
-            throw new Error('cpf já cadastrado');
-        }
-        if (!!telephoneExists) {
-            throw new Error('telefone já cadastrado');
+    async create(user: CreateUserDTO): Promise<IUser> {
+        const cpfExists = await this.getByCpf(user.cpf);
+        if (cpfExists) {
+            throw { message: 'cpf já cadastrado' };
         }
 
-        const newUser = await userRepository.create(user);
-        this.memoryCache = null;
-        return newUser;
-    }
-
-    async updateUser(email: string, senha: string, newUser: UpdateUserDTO): Promise<IUser | null> {
-        const user = await this.getUserByEmail(email);
-        if (!user) {
-            throw new Error('user not found');
+        const emailExists = await this.getByEmail(user.email);
+        if (emailExists) {
+            throw { message: 'emnail já cadastrado' };
         }
-        const validPassword = await compare(senha, user.password);
-        if (validPassword) {
-            const updatedUser = await userRepository.update(user.id, newUser);
-            this.memoryCache = null;
-            return updatedUser;
-        } else {
-            throw new Error('erro ao att usuario');
+
+        const telephoneExists = await this.getByTelephone(user.telephone);
+        if (telephoneExists) {
+            throw { message: 'telefone já cadastrado' };
         }
+
+        return await this.repository.create(user);
     }
 
-    async getAllUsers(): Promise<IUser[]> {
-        const users = await this.cache();
-        return users;
+    async update(id: string, user: UpdateUserDTO): Promise<IUser | null> {
+        const userExists = await this.getById(id);
+        if (!userExists) {
+            throw { message: 'usuário não existe' };
+        }
+
+        return await this.repository.update(id, user);
     }
 
-    async getUserById(id: string): Promise<IUser | undefined> {
-        const users = await this.cache();
-        const user = users.find((data) => data.id === id);
-        return user;
+    async getAll(): Promise<IUser[]> {
+        return await this.repository.get();
     }
 
-    async getUserByEmail(email: string): Promise<IUser | undefined> {
-        const users = await this.cache();
-        const user = users.find((data) => data.email === email);
-        return user;
+    async getById(id: string): Promise<IUser | undefined> {
+        const users = await this.getAll();
+        return users.find((data) => data.id === id);
     }
 
-    async getUserByCpf(cpf: string): Promise<IUser | undefined> {
-        const users = await this.cache();
-        const user = users.find((data) => data.cpf === cpf);
-        return user;
+    async getByCpf(cpf: string): Promise<IUser | undefined> {
+        const users = await this.getAll();
+        return users.find((data) => data.cpf === cpf);
     }
 
-    async getUserByTelephone(telephone: string): Promise<IUser | undefined> {
-        const users = await this.cache();
-        const user = users.find((data) => data.telephone === telephone);
-        return user;
+    async getByEmail(email: string): Promise<IUser | undefined> {
+        const users = await this.getAll();
+        return users.find((data) => data.email === email);
+    }
+
+    async getByTelephone(telephone: string): Promise<IUser | undefined> {
+        const users = await this.getAll();
+        return users.find((data) => data.telephone === telephone);
     }
 }
-
-export default new UserService();

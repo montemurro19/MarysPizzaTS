@@ -1,42 +1,29 @@
 import { v4 } from 'uuid';
-import { CreateUserDTO, UpdateUserDTO } from './Entities/user.DTO';
-import { IUser, UserModel } from './Entities/user.model';
-import Token from '../Util/Middlewares/token';
-import password from '../Util/Middlewares/password';
+import { CreateUserDTO, UpdateUserDTO } from './user.DTO';
+import { IUser, UserModel } from './user.model';
+import Token from '../common/Authentication/token';
 
-export interface IUserRepository {
-    create(user: CreateUserDTO): Promise<IUser>;
-    update(id: string, user: UpdateUserDTO): Promise<IUser | null>;
-    get(): Promise<IUser[]>;
-}
+export default class UserRepository {
+    private token: Token;
 
-class UserRepository implements IUserRepository {
+    constructor() {
+        this.token = new Token();
+    }
+
     async create(user: CreateUserDTO): Promise<IUser> {
         const id = v4();
-        const token = Token.generate(id);
-        const hashedPassword = await password.hash(user.password);
-        const newUser: IUser = {
-            id: id,
-            ...user,
-            password: hashedPassword,
-            token: token
-        };
-        const createdUser = await UserModel.create(newUser);
-        return createdUser;
+        const token = this.token.generate(id);
+
+        const newUser: IUser = { ...user, id, token };
+
+        return await UserModel.create(newUser);
     }
+
     async update(id: string, user: UpdateUserDTO): Promise<IUser | null> {
-        try {
-            const updatedUser = await UserModel.findOneAndUpdate({ id: id }, user, { new: true });
-            return updatedUser;
-        } catch (e) {
-            console.error(e);
-            return null;
-        }
+        return await UserModel.findOneAndUpdate({ id }, user);
     }
+
     async get(): Promise<IUser[]> {
-        const users = await UserModel.find();
-        return users;
+        return await UserModel.find();
     }
 }
-
-export default new UserRepository();

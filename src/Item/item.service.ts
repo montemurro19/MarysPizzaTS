@@ -1,68 +1,59 @@
-import { IUser } from '../User/Entities/user.model';
-import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
-import { IItem } from './Entities/item.model';
-import itemRepository from './item.repository';
+import { CreateItemDTO, UpdateItemDTO } from './item.DTO';
+import { IItem } from './item.model';
+import { ItemRepository } from './item.repository';
 
-class ItemService {
+export class ItemService {
     private memoryCache: IItem[] | null = null;
+    private repository: ItemRepository;
+
+    constructor() {
+        this.repository = new ItemRepository();
+    }
+
     private async cache(): Promise<IItem[]> {
-        this.memoryCache !== null ? this.memoryCache : (this.memoryCache = await itemRepository.get());
+        this.memoryCache !== null ? this.memoryCache : (this.memoryCache = await this.repository.get());
         return this.memoryCache;
     }
 
-    async createItem(item: CreateItemDTO, user: IUser): Promise<IItem> {
-        const itemExists = await this.getItemByTitle(item.title);
+    async create(item: CreateItemDTO): Promise<IItem> {
+        const itemExists = await this.getByTitle(item.title);
         if (itemExists) {
-            throw { error: 'conflict', message: 'Item já cadastrado' };
+            throw { error: 'conflict', message: 'item já cadastrado' };
         }
 
-        const newItem = await itemRepository.create(item);
+        const newItem = await this.repository.create(item);
         this.memoryCache = null;
         return newItem;
     }
 
-    async updateItem(id: string, item: UpdateItemDTO, user: IUser): Promise<IItem | null> {
-        if (user.userType !== 'admin') {
-            throw { error: 'unauthorized', message: 'sem autorização' };
-        }
-
-        const updatedItem = await itemRepository.update(id, item);
+    async update(id: string, item: UpdateItemDTO): Promise<IItem | null> {
+        const updatedItem = await this.repository.update(id, item);
         this.memoryCache = null;
         return updatedItem;
     }
 
-    async deleteItem(id: string, user: IUser): Promise<boolean> {
-        if (user.userType !== 'admin') {
-            throw { error: 'unauthorized', message: 'sem autorização' };
-        }
-
-        const deletedItem = await itemRepository.delete(id);
+    async delete(id: string): Promise<boolean> {
+        const deletedItem = await this.repository.delete(id);
         this.memoryCache = null;
         return deletedItem;
     }
 
-    async getAllItems(): Promise<IItem[]> {
-        const items = this.cache();
-        return items;
+    async getAll(): Promise<IItem[]> {
+        return this.cache();
     }
-    //consertar esse undefined
-    async getItemById(id: string): Promise<IItem | undefined> {
+
+    async getById(id: string): Promise<IItem | undefined> {
         const items = await this.cache();
-        const item = items.find((data) => data.id === id);
-        return item;
+        return items.find((data) => data.id === id);
     }
-    //consertar esse undefined
-    async getItemByTitle(title: string): Promise<IItem | undefined> {
+
+    async getByTitle(title: string): Promise<IItem | undefined> {
         const items = await this.cache();
-        const item = items.find((data) => data.title === title);
-        return item;
+        return items.find((data) => data.title === title);
     }
-    //adicionar uma verificação de tamanho da lista
-    async getItemByType(type: string): Promise<IItem[] | null> {
+
+    async getByType(type: string): Promise<IItem[] | null> {
         const items = await this.cache();
-        const itemsByType = items.filter((item) => item.type === type);
-        return itemsByType;
+        return items.filter((data) => data.type === type);
     }
 }
-
-export default new ItemService();

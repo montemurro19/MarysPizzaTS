@@ -1,38 +1,25 @@
 import { v4 } from 'uuid';
-import { CreateItemDTO, UpdateItemDTO } from './Entities/item.DTO';
-import { IItem, ItemModel } from './Entities/item.model';
+import { IItem, ItemModel } from './item.model';
+import { CreateItemDTO, UpdateItemDTO } from './item.DTO';
 
-export interface IItemRepository {
-    create(item: CreateItemDTO): Promise<IItem>;
-    update(id: string, item: UpdateItemDTO): Promise<IItem | null>;
-    delete(id: string): Promise<boolean>;
-    get(): Promise<IItem[]>;
-}
-
-class ItemRepository implements IItemRepository {
+export class ItemRepository {
     async create(item: CreateItemDTO): Promise<IItem> {
         const id = v4();
 
-        const newItem: IItem = {
-            ...item,
-            id: id
-        };
+        const newItem: IItem = { ...item, id };
 
-        const createdItem = await ItemModel.create(newItem);
-        return createdItem;
+        return await ItemModel.create(newItem);
     }
+
     async update(id: string, item: UpdateItemDTO): Promise<IItem | null> {
-        const updatedItem = await ItemModel.findOneAndUpdate({ id }, item, { new: true });
-        return updatedItem;
+        return await ItemModel.findOneAndUpdate({ id }, item, { new: true });
     }
+
     async delete(id: string): Promise<boolean> {
-        const result = await ItemModel.findOneAndDelete({ id });
-        return !!result;
+        return !!(await ItemModel.findOneAndDelete({ id }));
     }
+
     async get(): Promise<IItem[]> {
-        const items = await ItemModel.find();
-        return items;
+        return await ItemModel.find();
     }
 }
-
-export default new ItemRepository();

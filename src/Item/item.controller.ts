@@ -1,89 +1,70 @@
 import { NextFunction, Request, Response } from 'express';
-import itemService from './item.service';
+import { ItemService } from './item.service';
 
-class ItemController {
-    async createItem(req: Request, res: Response, next: NextFunction) {
+export class ItemController {
+    private service: ItemService;
+
+    constructor() {
+        this.service = new ItemService();
+    }
+
+    async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { title, description, price, type } = req.body;
 
-            const createdItem = await itemService.createItem({ title, description, price, type }, req.user);
+            const createdItem = await this.service.create({ title, description, price, type });
+
             if (!!createdItem) {
-                throw { message: 'preencha todos o campos' };
+                throw { message: 'preencha todos os campos' };
             }
 
-            res.status(201).json(createdItem);
-        } catch (e) {
-            console.log(e);
-            next(e);
+            return res.status(201).json(createdItem);
+        } catch (err) {
+            next(err);
         }
     }
 
-    async updateItem(req: Request, res: Response, next: NextFunction) {
+    async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const updatedItem = await itemService.updateItem(req.params.id, req.body, req.user);
-            if (!updatedItem) {
-                res.status(404).json({ erro: 'item não encontrado' });
-            }
-
-            res.status(200).json(updatedItem);
-        } catch (e) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 
-    async deleteItem(req: Request, res: Response, next: NextFunction) {
+    async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const deletedItem = await itemService.deleteItem(req.params.id, req.user);
-            if (!deletedItem) {
-                res.status(404).json({ erro: 'item não encontrado' });
-            }
-            res.status(200).json(deletedItem);
-        } catch (e) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 
-    async getAllItems(req: Request, res: Response, next: NextFunction) {
+    async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const items = await itemService.getAllItems();
+            const items = await this.service.getAll();
             return res.status(200).json(items);
-        } catch (e: any) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 
     async getById(req: Request, res: Response, next: NextFunction) {
         try {
-            const item = await itemService.getItemById(req.params.id);
-            res.status(200).json(item);
-        } catch (e) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 
     async getByTitle(req: Request, res: Response, next: NextFunction) {
         try {
-            const item = await itemService.getItemByTitle(req.params.title);
-            if (!item) {
-                return res.status(404).json({ erro: 'item não encontrado' });
-            }
-            return res.status(200).json(item);
-        } catch (e) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 
     async getByType(req: Request, res: Response, next: NextFunction) {
         try {
-            const items = await itemService.getItemByType(req.params.type);
-            if (!items) {
-                res.status(404).json({ erro: 'categoria não encontrada' });
-            }
-            res.status(200).json(items);
-        } catch (e) {
-            next(e);
+        } catch (err) {
+            next(err);
         }
     }
 }
-
-export default new ItemController();
