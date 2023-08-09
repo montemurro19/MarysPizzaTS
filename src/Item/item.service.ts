@@ -52,7 +52,7 @@ export class ItemService {
         return items.find((data) => data.title === title);
     }
 
-    async getByType(type: string): Promise<IItem[] | null> {
+    async getByType(type: string): Promise<IItem[]> {
         const items = await this.cache();
         return items.filter((data) => data.type === type);
     }

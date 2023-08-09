@@ -1,3 +1,4 @@
+import { comparePassword } from '../Common/Middleware/password';
 import { CreateUserDTO, UpdateUserDTO } from './user.DTO';
 import { IUser } from './user.model';
 import UserRepository from './user.repository';
@@ -59,5 +60,21 @@ export default class UserService {
     async getByTelephone(telephone: string): Promise<IUser | undefined> {
         const users = await this.getAll();
         return users.find((data) => data.telephone === telephone);
+    }
+
+    async login(email: string, password: string): Promise<IUser | undefined> {
+        const user = await this.getByEmail(email);
+
+        if (!user) {
+            throw { error: 'not_found', message: 'usuário não encontrado' };
+        }
+
+        const isMatch = comparePassword(password, user.password);
+
+        if (!isMatch) {
+            throw { error: 'unauthorized' };
+        }
+
+        return user;
     }
 }

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import Mongo from './mongo.connection';
+import Mongo from '../mongo.connection';
 
 const db = new Mongo();
 const requestTimeout = 5000;

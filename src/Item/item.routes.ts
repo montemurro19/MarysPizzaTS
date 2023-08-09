@@ -1,19 +1,50 @@
 import express, { Router } from 'express';
 import { ItemController } from './item.controller';
+import { AuthController } from '../Authentication/auth.controller';
 
 export default class ItemRoutes {
     public router: Router;
 
-    private controller: ItemController;
+    private itemController: ItemController;
+    private authController: AuthController;
 
     constructor() {
-        this.controller = new ItemController();
+        this.itemController = new ItemController();
+        this.authController = new AuthController();
         this.router = express.Router();
         this.registerRoutes();
     }
 
     protected registerRoutes(): void {
-        this.router.post('/', (req, res, next) => this.controller.create(req, res, next));
-        this.router.get('/', (req, res, next) => this.controller.getAll(req, res, next));
+        this.router.post('/', 
+            this.authController.superUser.bind(this.authController), 
+            this.itemController.create.bind(this.itemController)
+        );
+
+        this.router.put('/:id', 
+            this.authController.superUser.bind(this.authController), 
+            this.itemController.update.bind(this.itemController)
+        );
+        
+        this.router.delete('/:id', 
+            this.authController.superUser.bind(this.authController), 
+            this.itemController.delete.bind(this.itemController)
+        );
+        
+        this.router.get('/', 
+            this.itemController.getAll.bind(this.itemController)
+        );
+        
+        this.router.get('/:id', 
+            this.itemController.getById.bind(this.itemController)
+        );
+        
+        this.router.get('/product/:title', 
+            this.itemController.getByTitle.bind(this.itemController)
+        );
+        
+        this.router.get('/product/type/:type', 
+            this.itemController.getByType.bind(this.itemController)
+        );
     }
 }

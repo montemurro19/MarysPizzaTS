@@ -1,7 +1,7 @@
 import express from 'express';
-import routes from './common/routes';
-import errorResponse from './common/error';
-import { teste } from './common/teste';
+import routes from './Common/routes';
+import errorResponse from './Common/Middleware/error';
+import { teste } from './Common/Middleware/teste';
 
 export default class Server {
     public app: express.Application;
