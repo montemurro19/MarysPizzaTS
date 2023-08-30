@@ -62,7 +62,7 @@ export default class UserService {
         return users.find((data) => data.telephone === telephone);
     }
 
-    async login(email: string, password: string): Promise<IUser | undefined> {
+    async login(email: string, password: string): Promise<IUser> {
         const user = await this.getByEmail(email);
 
         if (!user) {

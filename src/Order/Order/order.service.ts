@@ -1,6 +1,6 @@
 import { IUser } from '../User/Entities/user.model';
-import { createOrderDTO, updateOrderDTO } from './Entities/order.DTO';
-import { IOrder } from './Entities/order.model';
+import { createOrderDTO, updateOrderDTO } from '../order.DTO';
+import { IOrder } from '../order.model';
 import orderRepository from './order.repository';
 
 class OrderService {

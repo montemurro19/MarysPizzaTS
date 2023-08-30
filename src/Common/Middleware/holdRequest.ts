@@ -4,7 +4,7 @@ import Mongo from '../mongo.connection';
 const db = new Mongo();
 const requestTimeout = 5000;
 
-export const teste = async (req: Request, res: Response, next: NextFunction) => {
+export const holdRequest = async (req: Request, res: Response, next: NextFunction) => {
     const isConnected = db.isConnected();
 
     if (!isConnected) {

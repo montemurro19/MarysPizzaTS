@@ -1,7 +1,7 @@
 import express from 'express';
 import routes from './Common/routes';
 import errorResponse from './Common/Middleware/error';
-import { teste } from './Common/Middleware/teste';
+import { holdRequest } from './Common/Middleware/holdRequest';
 
 export default class Server {
     public app: express.Application;
@@ -15,7 +15,7 @@ export default class Server {
         this.app.set('port', 3000);
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(teste);
+        this.app.use(holdRequest);
         routes(this.app);
         this.app.use(errorResponse);
     }

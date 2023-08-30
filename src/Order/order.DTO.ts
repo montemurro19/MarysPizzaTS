@@ -1,4 +1,4 @@
-export interface createOrderDTO {
+export interface CreateOrderDTO {
     userId: string;
     addressId: string;
     items: {
@@ -8,7 +8,8 @@ export interface createOrderDTO {
     notes?: string;
     paymentMethod: string;
 }
-export interface updateOrderDTO {
+
+export interface UpdateOrderDTO {
     items?: {
         amount: number;
         itemId: string;

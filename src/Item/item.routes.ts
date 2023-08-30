@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { ItemController } from './item.controller';
 import { AuthController } from '../Authentication/auth.controller';
 
@@ -11,7 +11,7 @@ export default class ItemRoutes {
     constructor() {
         this.itemController = new ItemController();
         this.authController = new AuthController();
-        this.router = express.Router();
+        this.router = Router();
         this.registerRoutes();
     }
 

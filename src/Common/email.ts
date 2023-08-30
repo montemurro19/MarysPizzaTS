@@ -12,11 +12,12 @@ export default class Email {
             text
         };
 
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log('email enviado');
-        } catch (err) {
-            console.log('email não enviado');
-        }
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(info.response);
+            transporter.close();
+        });
     }
 }
